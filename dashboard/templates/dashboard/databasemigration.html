@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Database Migration - APSLDC</title>
+</head>
+<body style="margin:0; font-family: sans-serif;">
+    <div style="display: flex;">
+        <aside style="width: 250px; background: #143C66; color: white; min-height: 100vh; padding: 20px; position: fixed;">
+            <nav>
+                <ul style="list-style: none; padding: 0;">
+                    <li><a href="{% url 'home' %}" style="color: white; text-decoration: none; display: block; padding: 15px; border-bottom: 1px solid #ffffff33;">🏠 Dashboard</a></li>
+                    <li><a href="{% url 'transmission' %}" style="color: white; text-decoration: none; display: block; padding: 15px; border-bottom: 1px solid #ffffff33;">🔌 Transmission Network</a></li>
+                    <li><a href="{% url 'migration' %}" style="color: #ffd700; text-decoration: none; display: block; padding: 15px; border-bottom: 1px solid #ffffff33; font-weight: bold;">📂 Database Migration</a></li>
+                    <li><a href="{% url 'emp_distmap' %}" style="color: white; text-decoration: none; display: block; padding: 15px; border-bottom: 1px solid #ffffff33;">👥 Employee Map</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main style="flex: 1; margin-left: 290px; padding: 20px;">
+            <h2 style="color: #143C66;">Legacy Data Migration (Oracle to PostgreSQL)</h2>
+            <tableborder="1" style="width:100%; border-collapse: collapse; margin-top: 20px;">
+                <thead style="background: #143C66; color: white;">
+                    <tr>
+                        <th>MTID</th>
+                        <th>Timestamp</th>
+                        <th>JSON Content (Text)</th>
+                        <th>Admin User</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in migration_data %}
+                    <tr>
+                        <td>{{ row.0 }}</td>
+                        <td>{{ row.1 }}</td>
+                        <td style="font-size: 11px; max-width: 400px; word-wrap: break-word;">{{ row.2 }}</td>
+                        <td>{{ row.3 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </div>
+</body>
+</html>

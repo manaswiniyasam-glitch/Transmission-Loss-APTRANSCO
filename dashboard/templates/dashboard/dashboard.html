@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SHAKTI PLATFORM - Home</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        /* Card Grid Styling */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, border 0.3s ease;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Border colors like in your image */
+        .card-dashboard { border-color: #f39c12; }
+        .card-migration { border-color: #27ae60; }
+        .card-dsm { border-color: #2980b9; }
+        .card-energy { border-color: #c0392b; }
+        .card-transmission { border-color: #8e44ad; }
+        .card-oa { border-color: #16a085; }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background-color: #f9f9f9;
+        }
+
+        .card img {
+            width: 50px;
+            margin-bottom: 15px;
+        }
+
+        .card span {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #143C66;
+        }
+
+        .platform-title {
+            text-align: left;
+            margin: 20px 0 10px 40px;
+            color: #143C66;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <main id="main-content">
+        <div class="container">
+            <h2 class="platform-title">SHAKTI PLATFORM</h2>
+            
+            <div class="grid-container">
+                <a href="{% url 'home' %}" class="card card-dashboard">
+                
+                    <img src="{% static 'images/icons/dashboard.png' %}" alt="Dashboard">
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{% url 'migration' %}" class="card card-migration">
+                    <img src="{% static 'images/icons/migration.png' %}" alt="Migration">
+                    <span>Database Migration</span>
+                </a>
+
+                <a href="{% url 'dsm' %}" class="card card-dsm">
+                    <img src="{% static 'images/icons/dsm.png' %}" alt="DSM">
+                    <span>DSM Application</span>
+                </a>
+
+                <a href="{% url 'energy_certification' %}" class="card card-energy">
+                    <img src="{% static 'images/icons/energy.png' %}" alt="Energy">
+                    <span>Energy Certification Interface</span>
+                </a>
+
+                <a href="{% url 'transmission' %}" class="card card-transmission">
+                    <img src="{% static 'images/icons/transmission.png' %}" alt="Transmission">
+                    <span>Transmission Network Loss</span>
+                </a>
+
+                <a href="{% url 'intrastate_oa' %}" class="card card-oa">
+                    <img src="{% static 'images/icons/oa.png' %}" alt="OA">
+                    <span>Intra-State OA Generator-Consumer</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    </body>
+</html>

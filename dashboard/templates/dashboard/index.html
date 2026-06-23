@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Andhra Pradesh State Load Dispatch Center - Official Government Website for Power Management">
+    <meta name="keywords" content="APSLDC, Andhra Pradesh, power, electricity, load dispatch, energy">
+    <title>APSLDC - Andhra Pradesh State Load Dispatch Center</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<script>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Accessibility Toolbar -->
+    <div class="accessibility-toolbar" role="region" aria-label="Accessibility Tools">
+        <div class="container">
+            <div class="toolbar-controls">
+                <button id="decrease-font" aria-label="Decrease font size" title="Decrease font size">A-</button>
+                <button id="reset-font" aria-label="Reset font size" title="Reset font size">A</button>
+                <button id="increase-font" aria-label="Increase font size" title="Increase font size">A+</button>
+                <button id="toggle-contrast" aria-label="Toggle high contrast" title="Toggle high contrast">
+                    <span aria-hidden="true">◐</span> Contrast
+                </button>
+                <button id="toggle-language" aria-label="Switch language" title="Switch to Telugu">
+                    <span aria-hidden="true">🌐</span> <span id="lang-text">తెలుగు</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="site-header" role="banner">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="site-title">
+                        <h1 class="lang-en" style="font-size: 18px; color: #143C66; line-height: 30px;">APSLDC</h1>
+                        <h1 class="lang-te" style="display:none; font-size: 18px; color: #143C66; line-height: 30px;">ఏపీఎస్ఎల్డీసీ</h1>
+                        <p class="department lang-en" style="line-height: 10px;">Andhra Pradesh State Load Dispatch Center</p>
+                        <p class="department lang-te" style="display:none; line-height: 10px;">ఆంధ్ర ప్రదేశ్ రాష్ట్ర లోడ్ డిస్పాచ్ సెంటర్
+                        </p>
+                        <p class="tagline lang-en">Government of Andhra Pradesh</p>
+                        <p class="tagline lang-te" style="display:none;">ఆంధ్ర ప్రదేశ్ ప్రభుత్వం</p>
+                    </div>
+                </div>
+                <div class="logo-section">
+<img src="{% static 'images/logo-f.png' %}" title="Logo" alt="Logo" width="120">
+<div class="site-title">
+                <div class="header-right">
+                    <div class="live-status">
+                        <div class="status-item">
+                            <span class="status-label lang-en">Current Load</span>
+                            <span class="status-label lang-te" style="display:none;">ప్రస్తుత లోడ్</span>
+                            <span class="status-value" id="current-load">8,450 MW</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label lang-en">Grid Frequency</span>
+                            <span class="status-label lang-te" style="display:none;">గ్రిడ్ ఫ్రీక్వెన్సీ</span>
+                            <span class="status-value" id="grid-frequency">50.02 Hz</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <div class="container">
+            <ol>
+                <li><a href="{% url 'home' %}" >Home</a><a href="#" class="lang-te" style="display:none;">హోమ్</a></li>
+                <!--<li aria-current="page" class="lang-en">Dashboard</li>
+                <li aria-current="page" class="lang-te" style="display:none;">డాష్‌బోర్డ్</li>-->
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" role="main">
+        <div class="container">
+            
+            <!-- Scheduled Outages -->
+                       <!-- Consumer Services -->
+            <section class="services-section" aria-labelledby="services-heading">
+                <h2 id="services-heading" class="lang-en">SHAKTI PLATFORM</h2>
+                <h2 class="lang-te" style="display:none;">విద్యుత్ సంబంధిత సేవలు మరియు నిర్వహణ కోసం ఉపయోగించే సమగ్ర వేదిక</h2>
+                    <div class="shakticards">
+                <a href="/dashboard/" class="card">
+                <div class="icon">📊</div>
+                <h3 class="lang-en">Dashboard</h3>
+                <h3 class="lang-te">డాష్‌బోర్డ్</h3>
+                </a>
+
+                <a href="/databasemigration/" class="card">
+                <div class="icon">⚙️</div>
+                <h3 class="lang-en">Database Migration</h3>
+                <h3 class="lang-te">డేటాబేస్ మైగ్రేషన్</h3>
+                </a>
+
+                <a href="/dsm-application/" class="card"> <div class="icon">📱</div>
+                <h3 class="lang-en">DSM Application</h3>
+                <h3 class="lang-te">డివియేషన్ సెటిల్‌మెంట్</h3>
+                </a>
+                <a href="/energy-certification/" class="card">
+                <div class="icon">📜</div>
+                <h3 class="lang-en">Energy Certification Interface</h3>
+                <h3 class="lang-te">విద్యుత్ ధృవీకరణ అనుసంధాన వేదిక</h3>
+                </a>
+
+                <a href="/transmission-network/" class="card">
+                <div class="icon">📉</div>
+                <h3 class="lang-en">Transmission Network Loss</h3>
+                <h3 class="lang-te">ట్రాన్స్‌మిషన్ నెట్‌వర్క్ లాస్</h3>
+                </a>
+
+                <a href="/intrastate-oa/" class="card">
+                <div class="icon">🔌</div>
+                <h3 class="lang-en">Intra-State OA Generator-Consumer</h3>
+                <h3 class="lang-te">విద్యుత్ యూనిట్లు, ఛార్జీలు లెక్కించడం</h3>
+                </a>
+
+                <a href="/fbss-settlement/" class="card">
+                <div class="icon">🔄</div>
+                <h3 class="lang-en">FBSS Settlement</h3>
+                <h3 class="lang-te">ఫ్రీక్వెన్సీ ఆధారిత సెటిల్‌మెంట్ వ్యవస్థ</h3>
+                </a>
+                    </div>
+
+
+                
+            </section>
+
+           
+        </div>
+    </main>
+
+    <!-- Footer -->
+   <footer class="shakti-footer">
+    SHAKTI PLATFORM © 2026 | All Rights Reserved
+  </footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+
+</html>

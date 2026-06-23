@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Map - APSLDC</title>
+</head>
+<body style="margin:0; font-family: sans-serif;">
+    <div style="display: flex;">
+        <aside style="width: 250px; background: #143C66; color: white; min-height: 100vh; padding: 20px; position: fixed;">
+            <nav>
+                <ul style="list-style: none; padding: 0;">
+                    <li><a href="{% url 'home' %}" style="color: white; text-decoration: none; display: block; padding: 15px; border-bottom: 1px solid #ffffff33;">🏠 Dashboard</a></li>
+                    <li><a href="{% url 'transmission' %}" style="color: white; text-decoration: none; display: block; padding: 15px; border-bottom: 1px solid #ffffff33;">🔌 Transmission Network</a></li>
+                    <li><a href="{% url 'migration' %}" style="color: white; text-decoration: none; display: block; padding: 15px; border-bottom: 1px solid #ffffff33;">📂 Database Migration</a></li>
+                    <li><a href="{% url 'emp_distmap' %}" style="color: #ffd700; text-decoration: none; display: block; padding: 15px; border-bottom: 1px solid #ffffff33; font-weight: bold;">👥 Employee Map</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main style="flex: 1; margin-left: 290px; padding: 20px;">
+            <h2 style="color: #143C66;">Employee District Mapping</h2>
+            <tableborder="1" style="width:100%; border-collapse: collapse; margin-top: 20px;">
+                <thead style="background: #143C66; color: white;">
+                    <tr>
+                        <th>Emp ID</th>
+                        <th>User Name</th>
+                        <th>Dist ID</th>
+                        <th>Meter ID</th>
+                        <th>Meter Number</th>
+                        <th>Substation ID</th>
+                        <th>Connection</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in distmap_data %}
+                    <tr>
+                        <td>{{ row.0 }}</td>
+                        <td>{{ row.1 }}</td>
+                        <td>{{ row.2 }}</td>
+                        <td>{{ row.4 }}</td>
+                        <td>{{ row.5 }}</td>
+                        <td>{{ row.6 }}</td>
+                        <td>{{ row.7 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </div>
+</body>
+</html>

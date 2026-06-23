@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>APTRANSCO Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; margin: 0; background-color: #f4f7f6; }
+        .sidebar { width: 260px; background: #004a99; color: white; height: 100vh; padding: 20px; position: fixed; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
+        .sidebar h2 { text-align: center; font-size: 20px; margin-bottom: 30px; border-bottom: 1px solid #ffffff33; padding-bottom: 10px; }
+        .sidebar a { color: white; text-decoration: none; display: block; padding: 12px; margin: 8px 0; border-radius: 4px; transition: 0.3s; }
+        .sidebar a:hover { background: #003366; padding-left: 20px; }
+        .main-content { margin-left: 300px; padding: 30-px; width: calc(100% - 300px); }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { border: 1px solid #eee; padding: 12px; text-align: left; }
+        th { background-color: #004a99; color: white; text-transform: uppercase; font-size: 13px; }
+        tr:hover { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>APTRANSCO PORTAL</h2>
+        <a href="{% url 'home' %}">📊 Dashboard</a>
+        <a href="{% url 'transmission' %}">🔌 Transmission Network</a>
+        <a href="{% url 'energy_certification' %}">📜 Energy Certification</a>
+        <a href="{% url 'migration' %}">📂 Database Migration</a>
+        <a href="{% url 'emp_distmap' %}">👥 Employee Map</a>
+        <br><br>
+        <a href="{% url 'login' %}" style="background: #d9534f;">Logout</a>
+    </div>
+
+    <div class="main-content">
+        <div class="card">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

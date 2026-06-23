@@ -1,0 +1,938 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Andhra Pradesh State Load Dispatch Center - Official Government Website for Power Management">
+    <meta name="keywords" content="APSLDC, Andhra Pradesh, power, electricity, load dispatch, energy">
+    <title>APSLDC - Andhra Pradesh State Load Dispatch Center</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<body>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Accessibility Toolbar -->
+    <div class="accessibility-toolbar" role="region" aria-label="Accessibility Tools">
+        <div class="container">
+            <div class="toolbar-controls">
+                <button id="decrease-font" aria-label="Decrease font size" title="Decrease font size">A-</button>
+                <button id="reset-font" aria-label="Reset font size" title="Reset font size">A</button>
+                <button id="increase-font" aria-label="Increase font size" title="Increase font size">A+</button>
+                <button id="toggle-contrast" aria-label="Toggle high contrast" title="Toggle high contrast">
+                    <span aria-hidden="true">◐</span> Contrast
+                </button>
+                <button id="toggle-language" aria-label="Switch language" title="Switch to Telugu">
+                    <span aria-hidden="true">🌐</span> <span id="lang-text">తెలుగు</span>
+                <button type="button" class="btn btn-primary" onclick="calculateLossFromNotes()">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="site-header" role="banner">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="{% static 'images/logo-f.png' %}" title="Logo" alt="Logo" width="120">
+                    <div class="site-title">
+                        <h1 class="lang-en" style="font-size: 18px; color: #143C66; line-height: 30px;">APSLDC</h1>
+                        <h1 class="lang-te" style="display:none; font-size: 18px; color: #143C66; line-height: 30px;">ఏపీఎస్ఎల్డీసీ</h1>
+                        <p class="department lang-en" style="line-height: 10px;">Andhra Pradesh State Load Dispatch Center</p>
+                        <p class="department lang-te" style="display:none; line-height: 10px;">ఆంధ్ర ప్రదేశ్ రాష్ట్ర లోడ్ డిస్పాచ్ సెంటర్
+                        </p>
+                        <p class="tagline lang-en">Government of Andhra Pradesh</p>
+                        <p class="tagline lang-te" style="display:none;">ఆంధ్ర ప్రదేశ్ ప్రభుత్వం</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="live-status">
+                        <div class="status-item">
+                            <span class="status-label lang-en">Current Load</span>
+                            <span class="status-label lang-te" style="display:none;">ప్రస్తుత లోడ్</span>
+                            <span class="status-value" id="current-load">8,450 MW</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label lang-en">Grid Frequency</span>
+                            <span class="status-label lang-te" style="display:none;">గ్రిడ్ ఫ్రీక్వెన్సీ</span>
+                            <span class="status-value" id="grid-frequency">50.02 Hz</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <div class="container">
+            <ol>
+                <li><a href="index.html" class="lang-en">Home</a><a href="#" class="lang-te" style="display:none;">హోమ్</a></li>
+                <li aria-current="page" class="lang-en">Transmission Network Loss Computation</li>
+                <li aria-current="page" class="lang-te" style="display:none;">విద్యుత్ ప్రసార వ్యవస్థలో జరిగే నష్టాల గణన</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" role="main">
+        <div class="container">
+            
+            <!-- Scheduled Outages -->
+                       <!-- Consumer Services -->
+            <section class="services-section" aria-labelledby="services-heading">
+                <h2 id="services-heading" class="lang-en">Transmission Network Loss Computation</h2>
+                <h2 class="lang-te" style="display:none;">విద్యుత్ ప్రసార వ్యవస్థలో జరిగే నష్టాల గణన</h2>
+            </section>
+          <section class="power-dashboard">
+
+<!-- LEFT COLUMN -->
+<div class="left-col">
+    <div class="form-group">
+        <label>Select DISCOM :</label>
+        <select id="discomSelect" onchange="updateDistricts()">
+            <option value="">Select DISCOM</option>
+            <option value="APEPDCL">APEPDCL</option>
+            <option value="APCPDCL">APCPDCL</option>
+            <option value="APSPDCL">APSPDCL</option>
+            <option value="APGENCO">APGENCO</option>
+        </select>
+    </div>
+
+<div class="form-group mb-2">
+    <label>Select District :</label>
+<select id="districtSelect" name="district" class="form-control" onchange="checkSelection()">
+    <option value="">Select District</option>
+    
+    <option value="PRIVATE">Private Developers</option>
+</select>
+</div>
+
+<div id="privateDevSection" class="form-group mb-2" style="display:none;">
+    <label>Select Developer :</label>
+    <select id="privateDevSelect" class="form-control" onchange="loadPrivateSubstations()">
+        <option value="">--Select Developer--</option>
+    </select>
+</div>
+
+<div class="form-group mb-2">
+    <label>Select Sub Station :</label>
+    <select id="substationSelect" class="form-control">
+        <option value="">Select Substation</option>
+    </select>
+</div>
+    <div class="form-group">
+        <label>Select Month :</label>
+        <select id="monthSelect">
+            <option>January</option>
+            <option>February</option>
+            <option>March</option>
+        </select>
+    </div>
+
+    <button type="button" class="btn btn-primary w-100 mb-2" onclick="finalAction()">Add Readings</button>
+    <button class="save-btn" onclick="saveData()">Save</button>
+    <button onclick="exportBulkCSV()" style="padding: 8px 15px; background: #17a2b8; color: white; border: none; border-radius: 4px; cursor: pointer;">
+    Export CSV
+    <button onclick="saveToDatabase()" class="btn btn-primary mt-2">Save to Database</button>
+</button>
+
+<button onclick="saveBulkData()" style="padding: 10px 25px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+    Save Bulk Data
+</button>
+</div>
+<div class="d-flex justify-content-end mb-2 gap-2" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
+    
+    <button type="button" class="btn btn-danger" onclick="calculateTransmissionLoss()" 
+            style="font-weight: bold; font-size: 13px; padding: 6px 15px; border-radius: 4px;">
+        📊 Run Loss Calculation
+    </button>
+</div>
+
+<!-- RIGHT COLUMN -->
+<div class="right-col" id="rightCol" style="display: {% if data %} block {% else %} none {% endif %}; margin-top: 20px;">
+
+    <div class="table-header" id="tableHeader" style="display: {% if data %} flex {% else %} none {% endif %}; gap: 10px; margin-bottom: 15px;">
+        <button class="view-btn" onclick="openPopup()">View</button>
+        <button class="export-btn" onclick="exportCSV()">Export CSV</button>
+        <button class="save-btn">Save</button>
+    </div>
+
+    <div class="table-container" id="tableContainer" style="display: {% if data %} block {% else %} none {% endif %}; overflow-x: auto; background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <table id="dataTable" style="width: 100%; border-collapse: collapse; min-width: 1000px;">
+            <thead>
+                <tr style="background-color: #143C66; color: white;">
+                    <th style="border: 1px solid #ddd; padding: 12px; font-size: 13px;">Feeder</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; font-size: 13px;">Type</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; font-size: 13px;">MF 1</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; font-size: 13px;">Initial 1</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; font-size: 13px;">Final 1</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; font-size: 13px;">MF 2</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; font-size: 13px;">Initial 2</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; font-size: 13px;">Final 2</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; font-size: 13px;">Comp Cons</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; font-size: 13px;">Energy MU</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; font-size: 13px;">Status</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; font-size: 13px;">Notes</th>
+                </tr>
+            </thead>
+
+            <tbody id="dynamicTableBody">
+                {% for item in data %}
+                <tr>
+                    <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">{{ item.feeder }}</td>
+                    <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">{{ item.type }}</td>
+                    <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">{{ item.mf1 }}</td>
+                    <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">{{ item.initial1 }}</td>
+                    <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">{{ item.final1 }}</td>
+                    <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">{{ item.mf2 }}</td>
+                    <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">{{ item.initial2 }}</td>
+                    <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">{{ item.final2 }}</td>
+                    <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">{{ item.comp_cons }}</td>
+                    <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">{{ item.energy_mu }}</td>
+                    <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">{{ item.status }}</td>
+                    <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">{{ item.notes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        
+            <tfoot>
+                <tr style="background-color: #f8f9fa;">
+                    <td colspan="12" style="border: 1px solid #333; padding: 15px; font-weight: bold; text-align: right;">
+                        Sub-Station Total: 
+                        <input type="text" id="subStationTotal" style="width: 120px; padding: 5px; border: 1px solid #ccc; border-radius: 4px;" value="0"> In MU
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        <div id="standardTableContainer" class="table-responsive">
+    <table class="table table-bordered">
+        <thead style="background-color: #1a4567; color: white;">
+            <tr>
+                <th>FEEDER</th>
+                <th>TYPE</th>
+                <th>MF 1</th>
+                <th>INITIAL 1</th>
+                <th>FINAL 1</th>
+                <th>MF 2</th>
+                <th>INITIAL 2</th>
+                <th>FINAL 2</th>
+                <th>COMP CONS</th>
+                <th>ENERGY MU</th>
+                <th>STATUS</th>
+                <th>NOTES</th>
+                </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+<div id="gencoLayout" style="display: none; margin-top: 20px;">
+    <h4 class="text-danger">APGENCO Meter Readings</h4>
+    <table class="table table-bordered table-sm" style="background-color: #fff1f1;">
+        <thead class="bg-light">
+            <tr>
+                <th>Select</th>
+                <th>Metering Point</th>
+                <th>Type</th>
+                <th>Factor</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="gencoTableBody"></tbody>
+    </table>
+</div>
+</section>
+<!-- Ikkada pettu (Before <script> tag) -->
+<!-- Paste this right after the </section> of power-dashboard -->
+<div id="excel-rapid-entry-section" style="display: none; margin-top: 30px; padding: 20px; background: #f4f7f9; border: 2px dashed #143C66; border-radius: 10px;">
+    <h3 style="color: #143C66; margin-top: 0;">Bulk Excel Row/Block Paste</h3>
+    <p style="font-size: 13px; color: #555;">Copy data from Excel. Click on <b>Initial 1</b> box and <b>Paste (Ctrl+V)</b>. Rows and Columns fill automatically.</p>
+    
+    <div id="excelDynamicGrid" style="overflow-x: auto; background: white; border-radius: 5px; border: 1px solid #ccc;"></div>
+
+    <div style="margin-top: 15px;">
+        <button onclick="saveBulkData()" style="padding: 10px 25px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Save Bulk Data</button>
+    </div>
+</div>
+</div>
+</div>
+
+        </div>
+    </main>
+<div class="popup" id="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closePopup()">✖</span>
+        <h3>Table View</h3>
+        <div id="popupTable"></div>
+    </div>
+</div>
+
+
+    <!-- Footer -->
+   <footer class="shakti-footer">
+    SHAKTI PLATFORM © 2026 | All Rights Reserved
+  </footer>
+
+    <script src="{% static 'js/script.js' %}?v=1.1"></script>
+
+<script>
+// 1. FULL DATA MAPPING (NO CHANGES TO EXISTING DATA)
+const substationData = {
+    // ==========================================
+    // 1. APCPDCL DISTRICTS (Central)
+    // ==========================================
+    "Bapatla-SS": [
+        { feeder: "132kV Bapatla Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "31.5MVA 132/33kV Transformer#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "31.5MVA 132/33kV Transformer#2", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132kV Chirala Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "50MVA 132/33kV Transformer#1 (Chirala)", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "Guntur-SS": [
+        { feeder: "132kV Tenali Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "50MVA 132/33kV Transformer#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "50MVA 132/33kV Transformer#2", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132kV Mangalagiri RTSS", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "Krishna-SS": [
+        { feeder: "132kV Gudivada Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "31.5MVA 132/33kV Transformer#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "50MVA 132/33kV Transformer#2", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132kV Vuyyuru RTSS", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "NTR-SS": [
+        { feeder: "220kV VTS-Nunna Feeder-1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "220kV VTS-Nunna Feeder-2", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "315MVA 400/220kV Transformer#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "500MVA 400/220kV Transformer#3", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132kV Jaggayyapeta Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "Palnadu-SS": [
+        { feeder: "132kV Sattenapalli Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132kV Narasaraopeta Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "31.5MVA 132/33kV Transformer#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "100MVA 220/132kV Transformer#1 (Piduguralla)", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "Prakasam-SS": [
+        { feeder: "132kV Ongole Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "100MVA 220/132kV Transformer#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132kV Addanki RTSS", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "Vijayawada-SS": [
+        { feeder: "220kV Vijayawada Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "315MVA 400/220kV Transformer#2", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "500MVA 400/220kV Transformer#4", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132kV Ibrahimpatnam RTSS", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    // 1. APSPDCL - COMPLETE DISTRICTS
+    // ==========================================
+    "Ananthapuramu-SS": [
+        { feeder: "132kV Anantapur Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "315MVA 400/220kV Transformer#1 (Gooty)", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "500MVA 400/220kV Transformer#3 (Gooty)", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "31.5MVA 132/33kV Transformer#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "50MVA 132/33kV Transformer#2", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "Chittoor-SS": [
+        { feeder: "132kV Palamaner Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "31.5MVA 132/33kV Transformer#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132kV Chittoor RTSS", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "Tirupati-SS": [
+        { feeder: "132 kV Sullurpet Rly. Traction#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132 kV Sullurpet Rly. Traction#2", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132 kV Renigunta Rly. Traction#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132 kV Renigunta Rly. Traction#2", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132 kV Amararaja", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132 kV Venkatagiri Rly. Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "Wind Mills, Tirumala", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "Sri City Private Ltd", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "Suddalagunta Sugars Ltd.", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "Sri Potti Sriramulu Nellore-SS": [
+        { feeder: "132kV Bitragunta Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "315MVA 400/220kV Transformer#1 (Nellore)", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132KV VIKKI INDUSTRY", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132KV EMPEE Power Company", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132KV Amman Try Feeder", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "Kurnool-SS": [
+        { feeder: "132kV Dhone Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "315MVA 400/220kV Transformer#1 (Kurnool)", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "500MVA 400/220kV Transformer#2", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "YSR Kadapa-SS": [
+        { feeder: "132KV Muddanur Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132 kV Texmaco (Zuari)", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132 kV ICL#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132 kV CCI#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "31.5MVA 132/33 kV Transformer#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "Sri Satya Sai-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Annamayya-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Nandhyal-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Nandyal-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Rayachoti-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Rajampet-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Sidhout-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Pulivendula-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Kadiri-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Pileru-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Madanapalle-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Tirupati Urban-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Tirupati Rural-Ss": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Srikalahasti-Ss": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Puttur-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Satyavedu-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Venkatagiri-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Sullurpet-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Renigunta-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Nellore Rural": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Nellore Urban-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Chittoor Rural-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Chittoor Urban-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Anantapur Rural-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Anantapur Urban-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "West Godavari-SS": [
+        { feeder: "132kV Bhimavaram Rly. Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132/33KV Transformer#2", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132kV Tanuku RTSS", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "Visakhapatnam-SS": [
+        { feeder: "315MVA 400/220kV Transformer#1 (Kalpaka)", mf1: 1, init1: 0, final1: 0 },
+        { feeder: "500MVA 400/220kV Transformer#3 (Kalpaka)", mf1: 1, init1: 0, final1: 0 },
+        { feeder: "220/132KV Transformer#1 (Gajuwaka)", mf1: 1, init1: 0, final1: 0 },
+        { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 }
+    ],
+    "Vizianagaram-SS": [
+        { feeder: "132kV FACOR Feeder", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "100MVA 220/132kV Transformer#1 (Garividi)", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132/33kV Transformer#2", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "Srikakulam-SS": [
+        { feeder: "132kV Tekkali Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "Eluru-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Kakinada-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Peddapuram-SS": [
+        { feeder: "132kV Samalkot Railway Traction", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 },
+        { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0, mf2: 1, init2: 0, final2: 0 }
+    ],
+    "Tuni-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "East Godavari-SS": [ { feeder: "220/132KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Konaseema-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Alluri Sitharama Raju-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Parvathipuram Manyam-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+    "Anakapalli-SS": [ { feeder: "132/33KV Transformer#1", mf1: 1, init1: 0, final1: 0 } ],
+};
+
+// 2. GENERATE TABLE FUNCTION
+// 1. GENERATE TABLE FUNCTION (Triggered on Substation Select)
+function generateTable() {
+    const substation = document.getElementById("substationSelect").value;
+    const tbody = document.getElementById("dynamicTableBody");
+    
+    if (!substationData[substation]) {
+        alert("Data not found for: " + substation);
+        return;
+    }
+
+    tbody.innerHTML = ""; 
+
+    substationData[substation].forEach(item => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">${item.feeder}</td>
+            <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">Import</td>
+            <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">${item.mf1}</td>
+            <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">0</td>
+            <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">0</td>
+            <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">1</td>
+            <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">0</td>
+            <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">0</td>
+            <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">0</td>
+            <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">0</td>
+            <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">Active</td>
+            <td contenteditable="true" style="border: 1px solid #333; padding: 10px;">-</td>
+        `;
+        tbody.appendChild(row);
+    });
+
+    document.getElementById("rightCol").style.display = "block";
+    document.getElementById("tableContainer").style.display = "block";
+    document.getElementById("tableHeader").style.display = "flex";
+    
+    // Trigger Excel Bulk Grid
+    loadExcelPasteGrid(); 
+}
+
+// 2. LOAD EXCEL GRID
+function loadExcelPasteGrid() {
+    const substation = document.getElementById("substationSelect").value;
+    const gridContainer = document.getElementById("excelDynamicGrid");
+    const section = document.getElementById("excel-rapid-entry-section");
+
+    if (!substationData[substation]) {
+        section.style.display = "none";
+        return;
+    }
+
+    section.style.display = "block";
+    let html = `
+        <table id="bulkTablePaste" style="width: 100%; border-collapse: collapse; min-width: 1300px; font-family: sans-serif;">
+            <thead>
+                <tr style="background: #143C66; color: white; font-size: 12px; text-align: center;">
+                    <th style="padding: 10px; border: 1px solid #ddd; width: 250px;">Feeder</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Type</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">MF 1</th>
+                    <th style="padding: 10px; border: 1px solid #ddd; background: #ffd700; color: #000;">Initial 1</th>
+                    <th style="padding: 10px; border: 1px solid #ddd; background: #ffd700; color: #000;">Final 1</th>
+                    <th style="padding: 10px; border: 1px solid #ddd; background: #ffd700; color: #000;">Initial 2</th>
+                    <th style="padding: 10px; border: 1px solid #ddd; background: #ffd700; color: #000;">Final 2</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Comp Cons</th>
+                    <th style="padding: 10px; border: 1px solid #ddd; background: #eef; color: #000;">Energy MU</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Status</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Notes</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+    substationData[substation].forEach((item) => {
+        html += `
+            <tr style="font-size: 13px;">
+                <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background: #f9f9f9;">${item.feeder}</td>
+                <td style="padding: 0;"><input type="text" value="Import" class="b-type" style="width:100%; border:none; padding:10px; text-align:center;"></td>
+                <td style="padding: 0;"><input type="number" value="${item.mf1 || 1}" class="b-mf1" style="width:100%; border:none; padding:10px; text-align:center;" oninput="doBulkCalc(this)"></td>
+                <td style="padding: 0;"><input type="number" class="b-input b-init1" style="width:100%; border:none; padding:10px;" oninput="doBulkCalc(this)"></td>
+                <td style="padding: 0;"><input type="number" class="b-input b-final1" style="width:100%; border:none; padding:10px;" oninput="doBulkCalc(this)"></td>
+                <td style="padding: 0;"><input type="number" class="b-input b-init2" style="width:100%; border:none; padding:10px;" oninput="doBulkCalc(this)"></td>
+                <td style="padding: 0;"><input type="number" class="b-input b-final2" style="width:100%; border:none; padding:10px;" oninput="doBulkCalc(this)"></td>
+                <td style="padding: 0;"><input type="number" value="0" class="b-comp" style="width:100%; border:none; padding:10px; text-align:center;" oninput="doBulkCalc(this)"></td>
+                <td style="padding: 0;"><input type="number" class="b-energy-mu" readonly style="width:100%; border:none; padding:10px; background:#eef; font-weight:bold; text-align:center;"></td>
+                <td style="padding: 0;"><input type="text" value="Active" class="b-status" style="width:100%; border:none; padding:10px; text-align:center;"></td>
+                <td style="padding: 0;"><input type="text" value="None" class="b-notes" style="width:100%; border:none; padding:10px;"></td>
+            </tr>`;
+    });
+
+    gridContainer.innerHTML = html + `</tbody></table>`;
+    setupBulkPaste();
+}
+
+// 3. CALCULATION LOGIC
+function doBulkCalc(el) {
+    const row = el.closest('tr');
+    const mf1 = parseFloat(row.querySelector('.b-mf1').value) || 1;
+    const init1 = parseFloat(row.querySelector('.b-init1').value) || 0;
+    const final1 = parseFloat(row.querySelector('.b-final1').value) || 0;
+    const init2 = parseFloat(row.querySelector('.b-init2').value) || 0;
+    const final2 = parseFloat(row.querySelector('.b-final2').value) || 0;
+    const comp = parseFloat(row.querySelector('.b-comp').value) || 0;
+
+    const cons1 = (final1 >= init1) ? (final1 - init1) * mf1 : 0;
+    const cons2 = (final2 >= init2) ? (final2 - init2) * mf1 : 0;
+
+    row.querySelector('.b-energy-mu').value = (cons1 + cons2 + comp).toFixed(2);
+}
+
+// 4. PASTE LOGIC
+function setupBulkPaste() {
+    const inputs = document.querySelectorAll('.b-input');
+    inputs.forEach(input => {
+        input.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData('text');
+            const rows = text.split(/\r\n|\n|\r/);
+            const startTr = this.closest('tr');
+            const startColIdx = this.closest('td').cellIndex;
+
+            rows.forEach((rowText, rIdx) => {
+                if (!rowText.trim()) return;
+                const targetTr = startTr.parentElement.rows[startTr.rowIndex + rIdx - 1]; // Offset check
+                if (targetTr) {
+                    const cols = rowText.split('\t');
+                    cols.forEach((cellText, cIdx) => {
+                        const targetTd = targetTr.cells[startColIdx + cIdx];
+                        if (targetTd) {
+                            const inp = targetTd.querySelector('input');
+                            if (inp && !inp.readOnly) {
+                                inp.value = cellText.trim();
+                                doBulkCalc(inp);
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    });
+}
+
+
+
+// 3. SAVE DATA FUNCTION
+function saveData() {
+    let tableData = [];
+    document.querySelectorAll('#dynamicTableBody tr').forEach(row => {
+        tableData.push({
+            feeder: row.cells[0].innerText,
+            energy_mu: row.cells[9].innerText
+        });
+    });
+
+    fetch('/save-energy-data/', { 
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}' 
+        },
+        body: JSON.stringify(tableData)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') {
+            alert(data.message);
+        } else {
+            alert("Error: " + data.message);
+        }
+    })
+    .catch(err => {
+        console.error("Save Error:", err);
+        alert("Error while saving, please check the server");
+    });
+}
+
+// 4. POPUP & EXPORT FUNCTIONS
+function openPopup() {
+    const clone = document.getElementById("dataTable").cloneNode(true);
+    clone.querySelectorAll("[contenteditable]").forEach(td => {
+        td.removeAttribute("contenteditable");
+    });
+    document.getElementById("popupTable").innerHTML = "";
+    document.getElementById("popupTable").appendChild(clone);
+    document.getElementById("popup").style.display = "flex";
+}
+
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+}
+
+function exportCSV() {
+    let csv = [];
+    let rows = document.querySelectorAll("#dataTable tr");
+    rows.forEach(row => {
+        let cols = row.querySelectorAll("td, th");
+        let data = [];
+        cols.forEach(col => data.push(col.innerText));
+        csv.push(data.join(","));
+    });
+    let blob = new Blob([csv.join("\n")], { type: "text/csv" });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "table_data.csv";
+    a.click();
+}
+
+</script>
+<script>
+    
+    function saveData() {
+        let tableData = [];
+        
+        document.querySelectorAll('#dynamicTableBody tr').forEach(row => {
+            tableData.push({
+                feeder: row.cells[0].innerText,
+                energy_mu: row.cells[9].innerText
+            });
+        });
+
+        
+        fetch('/save-energy-data/', { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}' 
+            },
+            body: JSON.stringify(tableData)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                alert(data.message);
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(err => {
+            console.error("Save Error:", err);
+            alert("Getting Error while saving, Please check the server");
+        });
+    }
+// ==========================================
+// NEW SAVE FUNCTION FOR BULK DATA
+// ==========================================
+function saveBulkData() {
+    let tableData = [];
+    const rows = document.querySelectorAll('#bulkTablePaste tbody tr');
+    
+    if (rows.length === 0) {
+        alert("No data found to save!");
+        return;
+    }
+
+    rows.forEach(row => {
+        tableData.push({
+            feeder: row.cells[0].innerText,
+            type: row.querySelector('.b-type').value,
+            mf: row.querySelector('.b-mf1').value,
+            initial_1: row.querySelector('.b-init1').value,
+            final_1: row.querySelector('.b-final1').value,
+            initial_2: row.querySelector('.b-init2').value,
+            final_2: row.querySelector('.b-final2').value,
+            comp_cons: row.querySelector('.b-comp').value,
+            energy_mu: row.querySelector('.b-energy-mu').value,
+            status: row.querySelector('.b-status').value,
+            notes: row.querySelector('.b-notes').value
+        });
+    });
+
+    fetch('/save-energy-data/', { 
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify(tableData)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') alert("Saved Successfully!");
+        else alert("Error: " + data.message);
+    })
+    .catch(err => alert("Server Error. Check console."));
+}
+
+// ==========================================
+// NEW EXPORT FUNCTION FOR BULK DATA
+// ==========================================
+function exportBulkCSV() {
+    let csv = [];
+    const table = document.getElementById("bulkTablePaste");
+    if (!table) return alert("Generate table first!");
+
+    let headerData = [];
+    table.querySelectorAll("thead th").forEach(th => headerData.push(th.innerText));
+    csv.push(headerData.join(","));
+
+    table.querySelectorAll("tbody tr").forEach(row => {
+        let rowData = [row.cells[0].innerText];
+        row.querySelectorAll("input").forEach(input => rowData.push(input.value));
+        csv.push(rowData.join(","));
+    });
+
+    let blob = new Blob([csv.join("\n")], { type: "text/csv" });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "Bulk_Energy_Data.csv";
+    a.click();
+}
+function saveToDatabase() {
+    const nameInput = document.getElementById("adminSubName");
+    const feedersInput = document.getElementById("adminFeeders");
+
+    if (!nameInput.value || !feedersInput.value) {
+        alert("Please enter both Substation and Feeders!");
+        return;
+    }
+
+    const name = nameInput.value;
+    const feeders = feedersInput.value.split(',');
+
+    fetch('/add-substation/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}' // Django CSRF Token
+        },
+        body: JSON.stringify({
+            name: name,
+            feeders: feeders
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert("✅ Successfully Saved to Database!");
+            location.reload(); // Page refresh aythe dropdown update avthundi
+        } else {
+            alert("❌ Error: " + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Something went wrong!");
+    });
+}
+</script>
+<div class="admin-panel" style="border: 1px solid #ddd; padding: 15px; margin: 20px 0; background-color: #f9f9f9;">
+    <h4>Add New Substation (Admin)</h4>
+    <input type="text" id="adminSubName" placeholder="Substation Name" class="form-control" style="margin-bottom: 10px;">
+    <textarea id="adminFeeders" placeholder="Feeders (comma separated: Fdr1, Fdr2)" class="form-control" rows="3"></textarea>
+    <button onclick="saveToDatabase()" class="btn btn-primary mt-2">Save to Database</button>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <label>Select Sub Station:</label>
+        <select id="substationSelect" class="form-control">
+            ...
+        </select>
+    </div>
+</div>
+<script>
+async function finalAction() {
+    const discom = document.getElementById("discomSelect").value.trim();
+    const gencoLayout = document.getElementById("gencoLayout");
+    const standardContainer = document.getElementById("standardTableContainer");
+    const gencoTbody = document.getElementById("gencoTableBody");
+    if (discom === "APGENCO") {
+    try {
+        const response = await fetch('/api/get-genco-readings/');
+        const data = await response.json();
+
+        // APGENCO logic lo table chupinchalsina daggara...
+if (data && data.length > 0) {
+    // FORCE HIDE ALL standard containers (Incase duplicates unte anni povaali)
+    document.querySelectorAll('[id="standardTableContainer"]').forEach(el => {
+        el.style.setProperty("display", "none", "important");
+    });
+
+    // SHOW Genco Layout
+    const gencoLayout = document.getElementById("gencoLayout");
+    if (gencoLayout) {
+        gencoLayout.style.setProperty("display", "block", "important");
+    }
+
+    const tbody = document.getElementById("gencoTableBody");
+    tbody.innerHTML = ""; 
+
+    data.forEach(item => {
+        const row = `<tr>
+            <td><input type="checkbox"></td>
+            <td style="color: black !important; font-weight: bold;">${item.feeder_name}</td>
+            <td style="color: black !important;">${item.meter_type}</td>
+            <td><input type="text" class="form-control-sm" value="${item.mf}"></td>
+            <td><input type="text" class="form-control-sm" value="${item.opening_reading}"></td>
+            <td><input type="text" class="form-control-sm" placeholder="End"></td>
+            <td><select class="form-control-sm"><option>OK</option><option>Faulty</option></select></td>
+        </tr>`;
+        tbody.insertAdjacentHTML('beforeend', row);
+    });
+}
+    else {
+  console.log("APGENCO Data Forcefully Updated!");
+        }
+    } catch (error) {
+        console.error("Fetch Error:", error);
+    }
+}
+    else {
+        // --- Vere DISCOMs (Safety Mode) ---
+        // Kotha layout ni hide chesi, patha blue table ni malli chupisthunnam
+        if (gencoLayout) gencoLayout.style.setProperty("display", "none", "important");
+        if (standardContainer) standardContainer.style.setProperty("display", "block", "important");
+        
+        if (typeof generateTable === "function") {
+            generateTable(); 
+            calculateLossFromNotes();// Patha static logic automatic ga run avthundhi
+        }
+    }
+}
+function calculateTransmissionLoss() {
+    let totalInput = 0;
+    let totalOutput = 0;
+
+    // 1. APGENCO INPUT CALCULATION
+    const gencoRows = document.querySelectorAll('.table tbody tr, #gencoTableBody tr');
+    gencoRows.forEach(row => {
+        // Metering Point column unna rows ni mathrame check chesthunnam
+        if (row.cells.length >= 6) {
+            const factor = parseFloat(row.cells[3]?.querySelector('input')?.value) || 0;
+            const start = parseFloat(row.cells[4]?.querySelector('input')?.value) || 0;
+            const end = parseFloat(row.cells[5]?.querySelector('input')?.value) || 0;
+            
+            if (end > 0) {
+                totalInput += (end - start) * factor;
+            }
+        }
+    });
+
+    // 2. OUTPUT CALCULATION (Sub-Station Total Box Fix)
+    // Nuvvu type chesina 400.0000 box ni idhi ippudu correct ga catch chestundi
+    const outputField = document.querySelector('input[class*="form-control"][style*="text-align: right"]') || 
+                         document.querySelector('td input[type="number"]') ||
+                         document.getElementById('sub_station_total'); // ID unte idhi use avthundi
+
+    // Search specifically for the value near "Sub-Station Total" text
+    const allInputs = document.querySelectorAll('input');
+    allInputs.forEach(input => {
+        if(input.value && input.closest('tr')?.innerText.includes('Sub-Station Total')) {
+            totalOutput = parseFloat(input.value) || 0;
+        }
+    });
+
+    // If still 0, try the first numeric input with a high value
+    if (totalOutput === 0) {
+        totalOutput = parseFloat(document.querySelector('.table-responsive input')?.value) || 0;
+    }
+
+    // 3. RESULT DISPLAY
+    if (totalInput > 0) {
+        const lossMU = totalInput - totalOutput;
+        const lossPercent = (lossMU / totalInput) * 100;
+        
+        showFinalResult(totalInput, totalOutput, lossPercent);
+    } else {
+        alert("APGENCO readings enter chesi Calculation kottandi!");
+    }
+}
+
+function showFinalResult(i, o, p) {
+    let resultBox = document.getElementById("lossDisplayBar");
+    if (!resultBox) {
+        resultBox = document.createElement("div");
+        resultBox.id = "lossDisplayBar";
+        const table = document.querySelector(".table-responsive") || document.querySelector("table");
+        table.parentNode.insertBefore(resultBox, table);
+    }
+    
+    // Result box neat ga align cheyadam
+    resultBox.innerHTML = `
+        <div style="background: #fff; border: 1px solid #dc3545; padding: 10px; margin: 10px 0; display: flex; justify-content: space-around; font-weight: bold; border-radius: 5px; color: #b91c1c;">
+            <span>Input: ${i.toFixed(2)} MU</span>
+            <span>Output: ${o.toFixed(2)} MU</span>
+            <span>Transmission Loss: ${p.toFixed(2)}%</span>
+        </div>`;
+}
+</script>
+</body>
+</html>
+</script>
+
+
+   
+</body>
+
+</html>
